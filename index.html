@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <script src="scripts.js"></script>
+    <title>Document</title>
+</head>
+<body class="main-grid">
+    <div class="top-left">
+        <div id="funds">
+            <h2>Funds</h2>
+        </div>
+        <div id="place">
+            <h2>Place</h2>
+        </div>
+            
+        <div id="time">
+            <h2>Time</h2>
+        </div>
+            
+        <div id="rating">
+            <h2>Rating</h2>
+        </div>
+           
+    </div>
+    <div id="backRight" class="bottom-right">
+        <h1>Compare Genres</h1>
+        <div class="flex">
+            <nav>
+                <div id="fundsLink" onclick="changeColour(fundsLink)">Gross Funds</div>
+                <div id="placeLink" onclick="changeColour(placeLink)">Global // Domestic</div>
+                <div id="timeLink" onclick="changeColour(timeLink)">Over the Decades</div>
+                <div id="ratingLink" onclick="changeColour(ratingLink)">Rating over Revenue</div>
+            </nav>
+            <div class="genres">
+                <p id="action" onclick="genreLinks('action')">Action</p>
+                <p id="adventure" onclick="genreLinks('adventure')">Adventure</p>
+                <p id="comedy" onclick="genreLinks('comedy')">Comedy</p>
+                <p id="crime" onclick="genreLinks('crime')">Crime</p>
+                <p id="doc" onclick="genreLinks('doc')">Documentary</p>
+                <p id="drama" onclick="genreLinks('drama')">Drama</p>
+                <p id="family" onclick="genreLinks('family')">Family</p>
+                <p id="history" onclick="genreLinks('history')">History</p>
+                <p id="horror" onclick="genreLinks('horror')">Horror</p>
+                <p id="music" onclick="genreLinks('music')">Music</p>
+                <p id="mystery" onclick="genreLinks('mystery')">Mystery</p>
+                <p id="romance" onclick="genreLinks('romance')">Romance</p>
+                <p id="sci-fi" onclick="genreLinks('sci-fi')">Sci-Fi</p>
+                <p id="thriller" onclick="genreLinks('thriller')">Thriller</p>
+                <p id="war" onclick="genreLinks('war')">War</p>
+                <p id="western" onclick="genreLinks('western')">Western</p>
+                <p onclick="genreLine('on')">Select All</p>
+                <p onclick="genreLine('off')">Clear All</p>
+            </div>
+        </div>
+        <div >
+            <input 
+                class="slider"
+                type="range" 
+                id="yearRange" 
+                min="1950" 
+                max="2025" 
+                value="2000" 
+                step="1"
+                oninput="updateYear(this.value)">
+        </div>
+        
+    </div>
+</body>
+</html>
