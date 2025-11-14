@@ -24,6 +24,7 @@ async function loadDataAndInitialize() {
         movieData.forEach(d => {
             d.primaryGenre = d.Genres ? d.Genres.split(',')[0].trim() : 'Unknown';
             d.Worldwide = +(d.Worldwide || d.worldwide || d['$Worldwide'] || 0);
+            d.Year = +d.Year || 0;
         });
 }
 
@@ -69,6 +70,9 @@ function changeColour(item){
         tl.style.color = "#0078D7";
 
         document.getElementById("time").style.display = "block";
+        
+        // Create or update visualization when Over the Decades is clicked
+        createTimeVisualization();
         break;
 
     case ratingLink:
@@ -130,6 +134,8 @@ function genreLinks(genre){
     
     if (document.getElementById("funds").style.display === "block") {
         createGrossFundsVisualization();
+    } else if (document.getElementById("time").style.display === "block") {
+        createTimeVisualization();
     }
 }
 
@@ -151,11 +157,16 @@ function genreLine(state){
     
     if (document.getElementById("funds").style.display === "block") {
         createGrossFundsVisualization();
+    } else if (document.getElementById("time").style.display === "block") {
+        createTimeVisualization();
     }
 }
 
 // Create Gross Funds visualization
 function createGrossFundsVisualization() {
+    // Hide year slider for this visualization
+    document.getElementById("yearRange").classList.add("hidden");
+    
     // Clear previous visualization
     const fundsDiv = document.getElementById("funds");
     fundsDiv.querySelector("#funds-visualization")?.remove();
@@ -223,7 +234,6 @@ function createGrossFundsVisualization() {
         .attr("y", -margin.left)
         .attr("x", -height / 2)
         .attr("dy", "1em")
-        .style("text-anchor", "middle")
         .text("Average Revenue ($ Millions)");
     
     // Bars with tooltips
@@ -244,10 +254,6 @@ function showTooltip(event, d) {
     d3.select(this).style("fill", "orange");
     d3.select("body").append("div")
         .attr("class", "tooltip")
-        .style("position", "absolute")
-        .style("background", "white")
-        .style("padding", "5px")
-        .style("border", "1px solid #ccc")
         .style("left", (event.pageX + 10) + "px")
         .style("top", (event.pageY - 10) + "px")
         .html(`${d.genre}<br/>Avg: $${d.revenue.toFixed(2)}M`);
@@ -255,5 +261,163 @@ function showTooltip(event, d) {
 
 function hideTooltip() {
     d3.select(this).style("fill", "steelblue");
+    d3.selectAll(".tooltip").remove();
+}
+
+// Create Time visualization (Line Chart)
+function createTimeVisualization() {
+    // Show year slider for this visualization
+    document.getElementById("yearRange").classList.remove("hidden");
+    
+    // Clear previous visualization
+    const timeDiv = document.getElementById("time");
+    timeDiv.querySelector("#time-visualization")?.remove();
+    
+    const vizContainer = document.createElement("div");
+    vizContainer.id = "time-visualization";
+    vizContainer.className = "visualization-container";
+    timeDiv.appendChild(vizContainer);
+    
+    // Get current year from slider
+    const currentYear = parseInt(document.getElementById("yearRange").value);
+    
+    // Filter data 
+    let filteredData = movieData.filter(d => d.Worldwide > 0 && d.Year >= 2000 && d.Year <= currentYear);
+    
+    // Apply genre filter
+    if (currentGenres.size > 0) {
+        const selectedGenres = Array.from(currentGenres).map(g => genreMap[g]);
+        filteredData = filteredData.filter(d => selectedGenres.includes(d.primaryGenre));
+    }
+    
+    // Group data by genre, year and calculate total revenue
+    const nestedData = d3.rollup(
+        filteredData,
+        v => d3.sum(v.map(d => d.Worldwide)) / 1000000, 
+        d => d.primaryGenre,
+        d => d.Year
+    );
+    
+    // Convert to array format
+    const lineData = Array.from(nestedData, ([genre, yearData]) => {
+        const dataPoints = Array.from(yearData, ([year, revenue]) => ({
+            year: year,
+            revenue: revenue
+        })).sort((a, b) => a.year - b.year);
+        
+        return {
+            genre: genre,
+            values: dataPoints
+        };
+    }).filter(d => d.values.length > 0);
+    
+    if (lineData.length === 0) {
+        vizContainer.innerHTML = "<p>No data available for selected time range.</p>";
+        return;
+    }
+    
+    // Chart dimensions
+    const margin = { top: 40, right: 100, bottom: 60, left: 80 }; 
+    const width = Math.max(500, vizContainer.clientWidth - margin.left - margin.right);
+    const height = 400 - margin.top - margin.bottom;
+    
+    const svg = d3.select("#time-visualization")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+    
+    // Scales
+    const xScale = d3.scaleLinear()
+        .domain([2000, currentYear])
+        .range([0, width]);
+    
+    const maxRevenue = d3.max(lineData, d => d3.max(d.values, v => v.revenue));
+    const yScale = d3.scaleLinear()
+        .domain([0, maxRevenue * 1.1])
+        .range([height, 0]);
+    
+    // Line generator (straight lines)
+    const line = d3.line()
+        .x(d => xScale(d.year))
+        .y(d => yScale(d.revenue));
+    
+    // Color scale
+    const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+    
+    // Axes
+    svg.append("g")
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(xScale).tickFormat(d3.format("d")));
+    
+    svg.append("g")
+        .call(d3.axisLeft(yScale).tickFormat(d => `$${d}M`));
+    
+    // axis labels
+    svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", -margin.left)
+        .attr("x", -height / 2)
+        .attr("dy", "1em")
+        .text("Total Revenue ($ Millions)");
+    
+    // lines
+    svg.selectAll(".genre-line")
+        .data(lineData)
+        .enter()
+        .append("path")
+        .attr("class", "line")
+        .attr("d", d => line(d.values))
+        .style("stroke", d => colorScale(d.genre));
+    
+    // Dots
+    svg.selectAll(".dot")
+        .data(lineData.flatMap(d => d.values.map(v => ({...v, genre: d.genre}))))
+        .enter()
+        .append("circle")
+        .attr("class", "dot")
+        .attr("cx", d => xScale(d.year))
+        .attr("cy", d => yScale(d.revenue))
+        .attr("r", 4)
+        .style("fill", d => colorScale(d.genre))
+        .on("mouseover", showTimeTooltip)
+        .on("mouseout", hideTimeTooltip);
+    
+    // Legend
+    const legend = svg.selectAll(".legend")
+        .data(lineData)
+        .enter()
+        .append("g")
+        .attr("class", "legend")
+        .attr("transform", (d, i) => `translate(${width + 10},${i * 20})`);
+    
+    legend.append("rect")
+        .attr("width", 18)
+        .attr("height", 18)
+        .style("fill", d => colorScale(d.genre));
+    
+    legend.append("text")
+        .attr("x", 24)
+        .attr("y", 9)
+        .attr("dy", ".35em")
+        .text(d => d.genre);
+}
+
+function updateYear(value) {
+    if (document.getElementById("time").style.display === "block") {
+        createTimeVisualization();
+    }
+}
+
+function showTimeTooltip(event, d) {
+    d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("left", (event.pageX + 10) + "px")
+        .style("top", (event.pageY - 10) + "px")
+        .html(`${d.genre}<br/>Year: ${d.year}<br/>Revenue: $${d.revenue.toFixed(2)}M`);
+}
+
+function hideTimeTooltip() {
     d3.selectAll(".tooltip").remove();
 }
