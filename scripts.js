@@ -26,6 +26,8 @@ async function loadDataAndInitialize() {
             d.Worldwide = +(d.Worldwide || d.worldwide || d['$Worldwide'] || 0);
             d.Year = +d.Year || 0;
         });
+
+        createGrossFundsVisualization();
 }
 
 //Unchanged
