@@ -36,7 +36,9 @@ function changeColour(item){
 
         document.getElementById("backRight").style.backgroundColor = "#E1DEDB";
         
-        document.getElementById("fundsLink").style.textDecoration = "underline";
+        const fl = document.getElementById("fundsLink");
+        fl.style.textDecoration = "underline";
+        fl.style.color = "#0078D7";
 
         document.getElementById("funds").style.display = "block";
         // Create or update visualization when Gross Funds is clicked
@@ -49,7 +51,9 @@ function changeColour(item){
 
         document.getElementById("backRight").style.backgroundColor = "#C2C7E4";
         
-        document.getElementById("placeLink").style.textDecoration = "underline";
+        const pl = document.getElementById("placeLink");
+        pl.style.textDecoration = "underline";
+        pl.style.color = "#0078D7";
 
         document.getElementById("place").style.display = "block";
         break;
@@ -60,7 +64,9 @@ function changeColour(item){
 
         document.getElementById("backRight").style.backgroundColor = "#B4977E";
         
-        document.getElementById("timeLink").style.textDecoration = "underline";
+        const tl = document.getElementById("timeLink");
+        tl.style.textDecoration = "underline";
+        tl.style.color = "#0078D7";
 
         document.getElementById("time").style.display = "block";
         break;
@@ -71,7 +77,9 @@ function changeColour(item){
 
         document.getElementById("backRight").style.backgroundColor = "#F3E0BE";
         
-        document.getElementById("ratingLink").style.textDecoration = "underline";
+        const rl = document.getElementById("ratingLink");
+        rl.style.textDecoration = "underline";
+        rl.style.color = "#0078D7";
 
         document.getElementById("rating").style.display = "block";
         break;
@@ -97,18 +105,27 @@ function showNone(){
 
 function noLine(){
     document.getElementById("fundsLink").style.textDecoration = "none";
+    document.getElementById("fundsLink").style.color = "black";
     
     document.getElementById("timeLink").style.textDecoration = "none";
+    document.getElementById("timeLink").style.color = "black";
     
     document.getElementById("placeLink").style.textDecoration = "none";
+    document.getElementById("placeLink").style.color = "black";
     
     document.getElementById("ratingLink").style.textDecoration = "none";
+    document.getElementById("ratingLink").style.color = "black";
 }
 
 function genreLinks(genre){
     const element = document.getElementById(genre);
+
     const hasUnderline = element.style.textDecoration === "underline";
+
     element.style.textDecoration = hasUnderline ? "none" : "underline";
+
+    element.style.color = hasUnderline ? "black" : "#0078D7";
+    
     hasUnderline ? currentGenres.delete(genre) : currentGenres.add(genre);
     
     if (document.getElementById("funds").style.display === "block") {
@@ -126,6 +143,9 @@ function genreLine(state){
     const underline = state === "on";
     genres.forEach(id => {
         document.getElementById(id).style.textDecoration = underline ? "underline" : "none";
+        
+        document.getElementById(id).style.color = underline ? "#0078D7" : "black";
+
         underline ? currentGenres.add(id) : currentGenres.delete(id);
     });
     
