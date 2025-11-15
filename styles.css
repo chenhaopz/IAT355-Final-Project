@@ -182,7 +182,23 @@ nav >*:hover{
 .dot:hover {
     r: 6;
 }
+/* Dot Visualization Styles  */
+.scatter-dot {
+    stroke: white;
+    stroke-width: 1;
+    transition: all 0.3s;
+}
 
+.scatter-dot:hover {
+    r: 10;
+    stroke-width: 2;
+}
+
+.reference-line {
+    stroke: #ccc;
+    stroke-dasharray: 4;
+    opacity: 0.6;
+}
 @media screen and (orientation: portrait) {
     .main-grid{
         flex-direction: column;

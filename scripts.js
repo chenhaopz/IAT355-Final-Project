@@ -25,6 +25,8 @@ async function loadDataAndInitialize() {
             d.primaryGenre = d.Genres ? d.Genres.split(',')[0].trim() : 'Unknown';
             d.Worldwide = +(d.Worldwide || d.worldwide || d['$Worldwide'] || 0);
             d.Year = +d.Year || 0;
+            d.DomesticPercent = +(d['Domestic %'] || 0);
+            d.ForeignPercent = +(d['Foreign %'] || 0);
         });
 
         createGrossFundsVisualization();
@@ -59,6 +61,9 @@ function changeColour(item){
         pl.style.color = "#0078D7";
 
         document.getElementById("place").style.display = "block";
+        
+        // Create or update visualization when Foregin VS Domestic is clicked
+        createPlaceVisualization();
         break;
 
     case timeLink:
@@ -138,6 +143,8 @@ function genreLinks(genre){
         createGrossFundsVisualization();
     } else if (document.getElementById("time").style.display === "block") {
         createTimeVisualization();
+    } else if (document.getElementById("place").style.display === "block") {
+        createPlaceVisualization();
     }
 }
 
@@ -161,10 +168,12 @@ function genreLine(state){
         createGrossFundsVisualization();
     } else if (document.getElementById("time").style.display === "block") {
         createTimeVisualization();
+    } else if (document.getElementById("place").style.display === "block") {
+        createPlaceVisualization();
     }
 }
 
-// Create Gross Funds visualization
+// Gross Funds visualization
 function createGrossFundsVisualization() {
     // Hide year slider for this visualization
     document.getElementById("yearRange").classList.add("hidden");
@@ -266,7 +275,7 @@ function hideTooltip() {
     d3.selectAll(".tooltip").remove();
 }
 
-// Create Time visualization (Line Chart)
+// Time visualization (Line Chart)
 function createTimeVisualization() {
     // Show year slider for this visualization
     document.getElementById("yearRange").classList.remove("hidden");
@@ -421,5 +430,150 @@ function showTimeTooltip(event, d) {
 }
 
 function hideTimeTooltip() {
+    d3.selectAll(".tooltip").remove();
+}
+// Dot visualization
+function createPlaceVisualization() {
+    // Hide year slider
+    document.getElementById("yearRange").classList.add("hidden");
+    
+    // Clear previous visualization
+    const placeDiv = document.getElementById("place");
+    placeDiv.querySelector("#place-visualization")?.remove();
+    
+    const vizContainer = document.createElement("div");
+    vizContainer.id = "place-visualization";
+    vizContainer.className = "visualization-container";
+    placeDiv.appendChild(vizContainer);
+    
+    // Filter data 
+    let filteredData = movieData.filter(d => {
+        const hasDomestic = !isNaN(d.DomesticPercent) && d.DomesticPercent >= 0;
+        const hasForeign = !isNaN(d.ForeignPercent) && d.ForeignPercent >= 0;
+        return hasDomestic || hasForeign;
+    });
+    
+    // Apply genre filter
+    if (currentGenres.size > 0) {
+        const selectedGenres = Array.from(currentGenres).map(g => genreMap[g]);
+        filteredData = filteredData.filter(d => selectedGenres.includes(d.primaryGenre));
+    }
+    
+    // Aggregate data by primary genre
+    const scatterData = Array.from(
+        d3.rollup(
+            filteredData,
+            v => ({
+                domesticPercent: d3.mean(v.filter(d => !isNaN(d.DomesticPercent)), d => d.DomesticPercent) || 0,
+                foreignPercent: d3.mean(v.filter(d => !isNaN(d.ForeignPercent)), d => d.ForeignPercent) || 0,
+                count: v.length
+            }),
+            d => d.primaryGenre
+        ),
+        ([genre, data]) => ({
+            genre: genre,
+            domesticPercent: data.domesticPercent,
+            foreignPercent: data.foreignPercent,
+            count: data.count
+        })
+    ).filter(d => d.count > 0);
+    
+    if (scatterData.length === 0) {
+        vizContainer.innerHTML = "<p>No data available for selected genres.</p>";
+        return;
+    }
+    
+    // Chart setup
+    const margin = { top: 40, right: 120, bottom: 60, left: 80 };
+    const width = Math.max(500, vizContainer.clientWidth - margin.left - margin.right);
+    const height = 700 - margin.top - margin.bottom;
+    
+    const svg = d3.select("#place-visualization")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+    
+    // Scales with fixed 0-100% domain (ensure equal axis lengths)
+const chartSize = Math.min(width, height); 
+const xScale = d3.scaleLinear().domain([0, 100]).range([0, chartSize]);
+const yScale = d3.scaleLinear().domain([0, 100]).range([chartSize, 0]);
+    
+    // Color scale
+    const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+    
+    // Axes
+    svg.append("g")
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(xScale).tickFormat(d => `${d}%`));
+    
+    svg.append("g")
+        .call(d3.axisLeft(yScale).tickFormat(d => `${d}%`));
+    
+    // Axis labels
+    svg.append("text")
+        .attr("class", "axis-label")
+        .attr("transform", "rotate(-90)")
+        .attr("y", -margin.left)
+        .attr("x", -height / 2)
+        .attr("dy", "1em")
+        .text("Average Domestic %");
+    
+    svg.append("text")
+        .attr("class", "axis-label")
+        .attr("transform", `translate(${width / 2}, ${height + margin.bottom - 10})`)
+        .text("Average Foreign %");
+    
+    // Reference line
+    svg.append("line")
+        .attr("class", "reference-line")
+        .attr("x1", xScale(0))
+        .attr("y1", yScale(0))
+        .attr("x2", xScale(100))
+        .attr("y2", yScale(100));
+    
+    // Dots
+    svg.selectAll(".scatter-dot")
+        .data(scatterData)
+        .enter()
+        .append("circle")
+        .attr("class", "scatter-dot")
+        .attr("cx", d => xScale(d.foreignPercent))
+        .attr("cy", d => yScale(d.domesticPercent))
+        .attr("r", 8)
+        .style("fill", d => colorScale(d.genre))
+        .on("mouseover", showScatterTooltip)
+        .on("mouseout", hideScatterTooltip);
+    
+    // Legend
+    const legend = svg.selectAll(".legend")
+        .data(scatterData)
+        .enter()
+        .append("g")
+        .attr("class", "legend")
+        .attr("transform", (d, i) => `translate(${width + 10},${i * 20})`);
+    
+    legend.append("rect")
+        .attr("width", 18)
+        .attr("height", 18)
+        .style("fill", d => colorScale(d.genre));
+    
+    legend.append("text")
+        .attr("x", 24)
+        .attr("y", 9)
+        .attr("dy", ".35em")
+        .text(d => d.genre);
+}
+
+function showScatterTooltip(event, d) {
+    d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("left", (event.pageX + 10) + "px")
+        .style("top", (event.pageY - 10) + "px")
+        .html(`${d.genre}<br/>Domestic: ${d.domesticPercent.toFixed(1)}%<br/>Foreign: ${d.foreignPercent.toFixed(1)}%`);
+}
+
+function hideScatterTooltip() {
     d3.selectAll(".tooltip").remove();
 }
