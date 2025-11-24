@@ -9,7 +9,7 @@ const genreMap = {
     'family': 'Family', 'history': 'History', 'horror': 'Horror',
     'music': 'Music', 'mystery': 'Mystery', 'romance': 'Romance',
     'sci-fi': 'Science Fiction', 'thriller': 'Thriller',
-    'war': 'War', 'western': 'Western'
+    'war': 'War', 'western': 'Western', 'fantasy': 'Fantasy', 'animation': 'Animation'
 };
 
 // Initialize when page loads
@@ -152,7 +152,7 @@ function genreLine(state){
     const genres = [
         "action", "adventure", "comedy", "crime", "doc", "drama", "family",
         "history", "horror", "music", "mystery", "romance", "sci-fi",
-        "thriller", "war", "western"
+        "thriller", "war", "western", "fantasy", "animation"
     ];
 
     const underline = state === "on";

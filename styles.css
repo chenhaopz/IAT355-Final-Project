@@ -114,6 +114,7 @@ nav >*:hover{
     font-size: 0.8rem;
     pointer-events: none;
     position: absolute;
+    max-width: 10rem;
     background: white;
     padding: 5px;
     border: 1px solid #ccc;
