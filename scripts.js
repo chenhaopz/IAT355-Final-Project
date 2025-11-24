@@ -30,6 +30,7 @@ async function loadDataAndInitialize() {
         });
 
         createGrossFundsVisualization();
+        changeColour(fundsLink);
 }
 
 //Unchanged
@@ -418,6 +419,8 @@ function createTimeVisualization() {
 function updateYear(value) {
     if (document.getElementById("time").style.display === "block") {
         createTimeVisualization();
+    } else if (document.getElementById("place").style.display === "block") {
+        createPlaceVisualization(); 
     }
 }
 
@@ -435,7 +438,7 @@ function hideTimeTooltip() {
 // Dot visualization
 function createPlaceVisualization() {
     // Hide year slider
-    document.getElementById("yearRange").classList.add("hidden");
+    document.getElementById("yearRange").classList.remove("hidden");
     
     // Clear previous visualization
     const placeDiv = document.getElementById("place");
@@ -445,12 +448,15 @@ function createPlaceVisualization() {
     vizContainer.id = "place-visualization";
     vizContainer.className = "visualization-container";
     placeDiv.appendChild(vizContainer);
+
+    const currentYear = parseInt(document.getElementById("yearRange").value);
     
     // Filter data 
     let filteredData = movieData.filter(d => {
         const hasDomestic = !isNaN(d.DomesticPercent) && d.DomesticPercent >= 0;
         const hasForeign = !isNaN(d.ForeignPercent) && d.ForeignPercent >= 0;
-        return hasDomestic || hasForeign;
+        const inYearRange = d.Year >= 2000 && d.Year <= currentYear;
+        return (hasDomestic || hasForeign) && inYearRange;
     });
     
     // Apply genre filter
