@@ -27,6 +27,16 @@ async function loadDataAndInitialize() {
             d.Year = +d.Year || 0;
             d.DomesticPercent = +(d['Domestic %'] || 0);
             d.ForeignPercent = +(d['Foreign %'] || 0);
+            // Process rating data - convert to 1 decimal place
+            let ratingStr = d.Rating || '';
+            if (ratingStr.includes('/')) {
+                ratingStr = ratingStr.split('/')[0]; // Remove "/10" part
+            }
+            d.Rating = parseFloat(ratingStr) || 0;
+            if (d.Rating > 0) {
+                d.Rating = Math.round(d.Rating * 10) / 10; // Ensure 1 decimal place
+            }
+            d.Title = d['Release Group'] || 'Unknown Movie';
         });
 
         createGrossFundsVisualization();
@@ -94,6 +104,7 @@ function changeColour(item){
         rl.style.color = "#0078D7";
 
         document.getElementById("rating").style.display = "block";
+        createRatingVisualization();
         break;
 
     default:
@@ -146,6 +157,8 @@ function genreLinks(genre){
         createTimeVisualization();
     } else if (document.getElementById("place").style.display === "block") {
         createPlaceVisualization();
+    } else if (document.getElementById("rating").style.display === "block") {
+        createRatingVisualization();
     }
 }
 
@@ -171,6 +184,8 @@ function genreLine(state){
         createTimeVisualization();
     } else if (document.getElementById("place").style.display === "block") {
         createPlaceVisualization();
+    } else if (document.getElementById("rating").style.display === "block") {
+        createRatingVisualization();
     }
 }
 
@@ -323,11 +338,6 @@ function createTimeVisualization() {
         };
     }).filter(d => d.values.length > 0);
     
-    if (lineData.length === 0) {
-        vizContainer.innerHTML = "<p>No data available for selected time range.</p>";
-        return;
-    }
-    
     // Chart dimensions
     const margin = { top: 40, right: 100, bottom: 60, left: 80 }; 
     const width = Math.max(500, vizContainer.clientWidth - margin.left - margin.right);
@@ -421,6 +431,8 @@ function updateYear(value) {
         createTimeVisualization();
     } else if (document.getElementById("place").style.display === "block") {
         createPlaceVisualization(); 
+    } else if (document.getElementById("rating").style.display === "block") {
+        createRatingVisualization();
     }
 }
 
@@ -484,11 +496,6 @@ function createPlaceVisualization() {
         })
     ).filter(d => d.count > 0);
     
-    if (scatterData.length === 0) {
-        vizContainer.innerHTML = "<p>No data available for selected genres.</p>";
-        return;
-    }
-    
     // Chart setup
     const margin = { top: 40, right: 120, bottom: 60, left: 80 };
     const width = Math.max(500, vizContainer.clientWidth - margin.left - margin.right);
@@ -502,9 +509,9 @@ function createPlaceVisualization() {
         .attr("transform", `translate(${margin.left},${margin.top})`);
     
     // Scales with fixed 0-100% domain (ensure equal axis lengths)
-const chartSize = Math.min(width, height); 
-const xScale = d3.scaleLinear().domain([0, 100]).range([0, chartSize]);
-const yScale = d3.scaleLinear().domain([0, 100]).range([chartSize, 0]);
+    const chartSize = Math.min(width, height); 
+    const xScale = d3.scaleLinear().domain([0, 100]).range([0, chartSize]);
+    const yScale = d3.scaleLinear().domain([0, 100]).range([chartSize, 0]);
     
     // Color scale
     const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
@@ -581,5 +588,129 @@ function showScatterTooltip(event, d) {
 }
 
 function hideScatterTooltip() {
+    d3.selectAll(".tooltip").remove();
+}
+// Rating vs Revenue visualization (Scatter Plot)
+function createRatingVisualization() {
+    // Show year slider
+    document.getElementById("yearRange").classList.remove("hidden");
+    
+    // Clear previous visualization
+    const ratingDiv = document.getElementById("rating");
+    ratingDiv.querySelector("#rating-visualization")?.remove();
+    
+    const vizContainer = document.createElement("div");
+    vizContainer.id = "rating-visualization";
+    vizContainer.className = "visualization-container";
+    ratingDiv.appendChild(vizContainer);
+    
+    // Get current year from slider
+    const currentYear = parseInt(document.getElementById("yearRange").value);
+    
+    // Filter data
+    let filteredData = movieData.filter(d => 
+        d.Rating > 0 && d.Worldwide > 0 && d.Year >= 2000 && d.Year <= currentYear
+    );
+    
+    // Apply genre filter
+    if (currentGenres.size > 0) {
+        const selectedGenres = Array.from(currentGenres).map(g => genreMap[g]);
+        filteredData = filteredData.filter(d => selectedGenres.includes(d.primaryGenre));
+    }
+    
+    // Prepare scatter plot data
+    const scatterData = filteredData.map(d => ({
+        title: d.Title, 
+        genre: d.primaryGenre,
+        rating: d.Rating,
+        revenue: d.Worldwide / 1000000,
+        year: d.Year
+    }));
+    
+    // Chart setup
+    const margin = { top: 40, right: 150, bottom: 60, left: 80 };
+    const width = Math.max(500, vizContainer.clientWidth - margin.left - margin.right);
+    const height = 500 - margin.top - margin.bottom;
+    
+    const svg = d3.select("#rating-visualization")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+    
+    // Scales
+    const xScale = d3.scaleLinear().domain([0, 10]).range([0, width]);
+    const yScale = d3.scaleLinear()
+        .domain([0, d3.max(scatterData, d => d.revenue) * 1.1])
+        .range([height, 0]);
+    
+    // Color scale
+    const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+    
+    // Axes
+    svg.append("g")
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(xScale));
+    
+    svg.append("g")
+        .call(d3.axisLeft(yScale).tickFormat(d => `$${d}M`));
+    
+    // Axis labels
+    svg.append("text")
+        .attr("class", "axis-label")
+        .attr("transform", "rotate(-90)")
+        .attr("y", -margin.left)
+        .attr("x", -height / 2)
+        .attr("dy", "1em")
+        .text("Worldwide Revenue ($ Millions)");
+    
+    svg.append("text")
+        .attr("class", "axis-label")
+        .attr("transform", `translate(${width / 2}, ${height + margin.bottom - 10})`)
+        .text("Rating");
+    
+    // Create dots
+    svg.selectAll(".rating-dot")
+        .data(scatterData)
+        .enter()
+        .append("circle")
+        .attr("class", "rating-dot")
+        .attr("cx", d => xScale(d.rating))
+        .attr("cy", d => yScale(d.revenue))
+        .attr("r", 4)
+        .style("fill", d => colorScale(d.genre))
+        .on("mouseover", showRatingTooltip)
+        .on("mouseout", hideRatingTooltip);
+    
+    // Add legend (consistent with your other visualizations)
+    const legend = svg.selectAll(".legend")
+       .data(scatterData)
+       .enter()
+       .append("g")
+       .attr("class", "legend")
+       .attr("transform", (d, i) => `translate(${width + 10},${i * 20})`);
+
+    legend.append("rect")
+       .attr("width", 18)
+       .attr("height", 18)
+       .style("fill", d => colorScale(d.genre));
+
+    legend.append("text")
+       .attr("x", 24)
+       .attr("y", 9)
+       .attr("dy", ".35em")
+       .text(d => d.genre);
+}
+
+function showRatingTooltip(event, d) {
+    d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("left", (event.pageX + 10) + "px")
+        .style("top", (event.pageY - 10) + "px")
+        .html(`${d.title}<br/>Genre: ${d.genre}<br/>Rating: ${d.rating}<br/>Revenue: $${d.revenue.toFixed(2)}M<br/>Year: ${d.year}`);
+}
+
+function hideRatingTooltip() {
     d3.selectAll(".tooltip").remove();
 }

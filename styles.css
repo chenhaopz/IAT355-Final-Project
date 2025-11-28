@@ -200,6 +200,19 @@ nav >*:hover{
     stroke-dasharray: 4;
     opacity: 0.6;
 }
+/* Rating Visualization Styles */
+.rating-dot {
+    stroke: white;
+    stroke-width: 1;
+    opacity: 0.7;
+    transition: all 0.3s;
+}
+
+.rating-dot:hover {
+    r: 6;
+    stroke-width: 2;
+    opacity: 1 !important;
+}
 @media screen and (orientation: portrait) {
     .main-grid{
         flex-direction: column;
