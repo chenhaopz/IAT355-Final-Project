@@ -27,10 +27,10 @@ async function loadDataAndInitialize() {
             d.Year = +d.Year || 0;
             d.DomesticPercent = +(d['Domestic %'] || 0);
             d.ForeignPercent = +(d['Foreign %'] || 0);
-            // Process rating data - convert to 1 decimal place
+            // Process rating data that convert to 1 decimal place
             let ratingStr = d.Rating || '';
             if (ratingStr.includes('/')) {
-                ratingStr = ratingStr.split('/')[0]; // Remove "/10" part
+                ratingStr = ratingStr.split('/')[0]; // Remove /10 part
             }
             d.Rating = parseFloat(ratingStr) || 0;
             if (d.Rating > 0) {
@@ -263,7 +263,7 @@ function createGrossFundsVisualization() {
         .attr("dy", "1em")
         .text("Average Revenue ($ Millions)");
     
-    // Bars with tooltips
+    // Bars
     svg.selectAll(".bar")
         .data(data)
         .enter()
@@ -293,7 +293,7 @@ function hideTooltip() {
 
 // Time visualization (Line Chart)
 function createTimeVisualization() {
-    // Show year slider for this visualization
+    // Show year slider
     document.getElementById("yearRange").classList.remove("hidden");
     
     // Clear previous visualization
@@ -405,20 +405,26 @@ function createTimeVisualization() {
         .style("fill", d => colorScale(d.genre))
         .on("mouseover", showTimeTooltip)
         .on("mouseout", hideTimeTooltip);
+
+    // Filter out Unknown genre
+    const legendData = lineData.filter(d => d.genre !== 'Unknown');
     
+    // If all data was Unknown, use the original data to avoid empty legend
+    const finalLegendData = legendData.length > 0 ? legendData : lineData;
+
     // Legend
     const legend = svg.selectAll(".legend")
-        .data(lineData)
+        .data(finalLegendData)
         .enter()
         .append("g")
         .attr("class", "legend")
         .attr("transform", (d, i) => `translate(${width + 10},${i * 20})`);
-    
+
     legend.append("rect")
         .attr("width", 18)
         .attr("height", 18)
         .style("fill", d => colorScale(d.genre));
-    
+
     legend.append("text")
         .attr("x", 24)
         .attr("y", 9)
@@ -559,19 +565,22 @@ function createPlaceVisualization() {
         .on("mouseover", showScatterTooltip)
         .on("mouseout", hideScatterTooltip);
     
+    // Filter out Unknown genre
+    const legendData = scatterData.filter(d => d.genre !== 'Unknown');
+
     // Legend
     const legend = svg.selectAll(".legend")
-        .data(scatterData)
+        .data(legendData)
         .enter()
         .append("g")
         .attr("class", "legend")
         .attr("transform", (d, i) => `translate(${width + 10},${i * 20})`);
-    
+
     legend.append("rect")
         .attr("width", 18)
         .attr("height", 18)
         .style("fill", d => colorScale(d.genre));
-    
+
     legend.append("text")
         .attr("x", 24)
         .attr("y", 9)
@@ -683,24 +692,30 @@ function createRatingVisualization() {
         .on("mouseover", showRatingTooltip)
         .on("mouseout", hideRatingTooltip);
     
-    // Add legend (consistent with your other visualizations)
+    // Get unique genres and filter out Unknown
+    const uniqueGenres = [...new Set(scatterData.map(d => d.genre))].filter(genre => genre !== 'Unknown');
+    
+    // Create legend data
+    const legendData = uniqueGenres.map(genre => ({ genre }));
+
+    // Legend
     const legend = svg.selectAll(".legend")
-       .data(scatterData)
-       .enter()
-       .append("g")
-       .attr("class", "legend")
-       .attr("transform", (d, i) => `translate(${width + 10},${i * 20})`);
+        .data(legendData)
+        .enter()
+        .append("g")
+        .attr("class", "legend")
+        .attr("transform", (d, i) => `translate(${width + 10},${i * 20})`);
 
     legend.append("rect")
-       .attr("width", 18)
-       .attr("height", 18)
-       .style("fill", d => colorScale(d.genre));
+        .attr("width", 18)
+        .attr("height", 18)
+        .style("fill", d => colorScale(d.genre));
 
     legend.append("text")
-       .attr("x", 24)
-       .attr("y", 9)
-       .attr("dy", ".35em")
-       .text(d => d.genre);
+        .attr("x", 24)
+        .attr("y", 9)
+        .attr("dy", ".35em")
+        .text(d => d.genre);
 }
 
 function showRatingTooltip(event, d) {
