@@ -34,7 +34,6 @@ h2{
     overflow: scroll;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    cursor: s-resize;
 }
 
 .top-left::-webkit-scrollbar {
@@ -107,6 +106,10 @@ nav >*:hover{
     width: 100%;
     height: 400px;
     margin-top: 2rem;
+}
+
+input{
+    margin-top: 3rem;
 }
 
 .tooltip {

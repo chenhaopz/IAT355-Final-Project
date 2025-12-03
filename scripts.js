@@ -283,6 +283,7 @@ function showTooltip(event, d) {
         .attr("class", "tooltip")
         .style("left", (event.pageX + 10) + "px")
         .style("top", (event.pageY - 10) + "px")
+        .style("height", "fit-content")
         .html(`${d.genre}<br/>Avg: $${d.revenue.toFixed(2)}M`);
 }
 
@@ -447,6 +448,7 @@ function showTimeTooltip(event, d) {
         .attr("class", "tooltip")
         .style("left", (event.pageX + 10) + "px")
         .style("top", (event.pageY - 10) + "px")
+        .style("height", "fit-content")
         .html(`${d.genre}<br/>Year: ${d.year}<br/>Revenue: $${d.revenue.toFixed(2)}M`);
 }
 
@@ -593,6 +595,7 @@ function showScatterTooltip(event, d) {
         .attr("class", "tooltip")
         .style("left", (event.pageX + 10) + "px")
         .style("top", (event.pageY - 10) + "px")
+        .style("height", "fit-content")
         .html(`${d.genre}<br/>Domestic: ${d.domesticPercent.toFixed(1)}%<br/>Foreign: ${d.foreignPercent.toFixed(1)}%`);
 }
 
@@ -723,6 +726,7 @@ function showRatingTooltip(event, d) {
         .attr("class", "tooltip")
         .style("left", (event.pageX + 10) + "px")
         .style("top", (event.pageY - 10) + "px")
+        .style("height", "fit-content")
         .html(`${d.title}<br/>Genre: ${d.genre}<br/>Rating: ${d.rating}<br/>Revenue: $${d.revenue.toFixed(2)}M<br/>Year: ${d.year}`);
 }
 

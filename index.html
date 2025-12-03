@@ -54,11 +54,12 @@
                 <p id="thriller" onclick="genreLinks('thriller')">Thriller</p>
                 <p id="war" onclick="genreLinks('war')">War</p>
                 <p id="western" onclick="genreLinks('western')">Western</p>
-                <p onclick="genreLine('on')">Select All</p>
-                <p onclick="genreLine('off')">Clear All</p>
+                <p onclick="genreLine('on')"><b>Select All</b></p>
+                <p onclick="genreLine('off')"><b>Clear All</b></p>
             </div>
         </div>
-        <div >
+        
+        <div>
             <input 
                 class="slider"
                 type="range" 
@@ -68,6 +69,7 @@
                 value="2024" 
                 step="1"
                 oninput="updateYear(this.value)">
+                <p class="year"><span id="yearVal">2024</span></p>
         </div>
         
     </div>
