@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', loadDataAndInitialize);
 
 // Load CSV data and initialize visualizations
 async function loadDataAndInitialize() {
-        movieData = await d3.csv("./dataset/movies_box_office.csv");
+        movieData = await d3.csv("dataset/movies_box_office.csv");
         console.log("Data loaded:", movieData.length, "records");
         
         // Process data
