@@ -41,6 +41,9 @@ async function loadDataAndInitialize() {
 
         createGrossFundsVisualization();
         changeColour(fundsLink);
+
+        // Initialize year display
+        document.getElementById('yearVal').textContent = `2000 - ${document.getElementById("yearRange").value}`;
 }
 
 //Unchanged
@@ -434,6 +437,9 @@ function createTimeVisualization() {
 }
 
 function updateYear(value) {
+    const currentYear = parseInt(document.getElementById("yearRange").value);
+    document.getElementById('yearVal').textContent = `2000 - ${currentYear}`;
+
     if (document.getElementById("time").style.display === "block") {
         createTimeVisualization();
     } else if (document.getElementById("place").style.display === "block") {
