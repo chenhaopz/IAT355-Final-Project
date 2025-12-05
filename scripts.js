@@ -22,7 +22,8 @@ async function loadDataAndInitialize() {
         
         // Process data
         movieData.forEach(d => {
-            d.primaryGenre = d.Genres ? d.Genres.split(',')[0].trim() : 'Unknown';
+            const firstGenre = d.Genres ? d.Genres.split(',')[0].trim() : '';
+            d.primaryGenre = firstGenre || '';
             d.Worldwide = +(d.Worldwide || d.worldwide || d['$Worldwide'] || 0);
             d.Year = +d.Year || 0;
             d.DomesticPercent = +(d['Domestic %'] || 0);
@@ -207,7 +208,7 @@ function createGrossFundsVisualization() {
     fundsDiv.appendChild(vizContainer);
     
     // Filter and process data
-    let filteredData = movieData.filter(d => d.Worldwide > 0);
+    let filteredData = movieData.filter(d => d.Worldwide > 0 && d.primaryGenre !== '');
     
     if (currentGenres.size > 0) {
         const selectedGenres = Array.from(currentGenres).map(g => genreMap[g]);
@@ -313,7 +314,7 @@ function createTimeVisualization() {
     const currentYear = parseInt(document.getElementById("yearRange").value);
     
     // Filter data 
-    let filteredData = movieData.filter(d => d.Worldwide > 0 && d.Year >= 2000 && d.Year <= currentYear);
+    let filteredData = movieData.filter(d => d.Worldwide > 0 && d.Year >= 2000 && d.Year <= currentYear && d.primaryGenre !== '');
     
     // Apply genre filter
     if (currentGenres.size > 0) {
@@ -410,12 +411,6 @@ function createTimeVisualization() {
         .on("mouseover", showTimeTooltip)
         .on("mouseout", hideTimeTooltip);
 
-    // Filter out Unknown genre
-    const legendData = lineData.filter(d => d.genre !== 'Unknown');
-    
-    // If all data was Unknown, use the original data to avoid empty legend
-    const finalLegendData = legendData.length > 0 ? legendData : lineData;
-
     // Legend
     const legend = svg.selectAll(".legend")
         .data(finalLegendData)
@@ -482,7 +477,8 @@ function createPlaceVisualization() {
         const hasDomestic = !isNaN(d.DomesticPercent) && d.DomesticPercent >= 0;
         const hasForeign = !isNaN(d.ForeignPercent) && d.ForeignPercent >= 0;
         const inYearRange = d.Year >= 2000 && d.Year <= currentYear;
-        return (hasDomestic || hasForeign) && inYearRange;
+        const hasGenre = d.primaryGenre !== '';
+        return (hasDomestic || hasForeign) && inYearRange && hasGenre;
     });
     
     // Apply genre filter
@@ -572,9 +568,6 @@ function createPlaceVisualization() {
         .style("fill", d => colorScale(d.genre))
         .on("mouseover", showScatterTooltip)
         .on("mouseout", hideScatterTooltip);
-    
-    // Filter out Unknown genre
-    const legendData = scatterData.filter(d => d.genre !== 'Unknown');
 
     // Legend
     const legend = svg.selectAll(".legend")
@@ -627,7 +620,7 @@ function createRatingVisualization() {
     
     // Filter data
     let filteredData = movieData.filter(d => 
-        d.Rating > 0 && d.Worldwide > 0 && d.Year >= 2000 && d.Year <= currentYear
+        d.Rating > 0 && d.Worldwide > 0 && d.Year >= 2000 && d.Year <= currentYear && d.primaryGenre !== ''
     );
     
     // Apply genre filter
@@ -700,12 +693,6 @@ function createRatingVisualization() {
         .style("fill", d => colorScale(d.genre))
         .on("mouseover", showRatingTooltip)
         .on("mouseout", hideRatingTooltip);
-    
-    // Get unique genres and filter out Unknown
-    const uniqueGenres = [...new Set(scatterData.map(d => d.genre))].filter(genre => genre !== 'Unknown');
-    
-    // Create legend data
-    const legendData = uniqueGenres.map(genre => ({ genre }));
 
     // Legend
     const legend = svg.selectAll(".legend")
