@@ -197,6 +197,7 @@ function genreLine(state){
 function createGrossFundsVisualization() {
     // Hide year slider for this visualization
     document.getElementById("yearRange").classList.add("hidden");
+    document.querySelector(".year").classList.add("hidden");
     
     // Clear previous visualization
     const fundsDiv = document.getElementById("funds");
@@ -300,6 +301,7 @@ function hideTooltip() {
 function createTimeVisualization() {
     // Show year slider
     document.getElementById("yearRange").classList.remove("hidden");
+    document.querySelector(".year").classList.remove("hidden");
     
     // Clear previous visualization
     const timeDiv = document.getElementById("time");
@@ -460,6 +462,7 @@ function hideTimeTooltip() {
 function createPlaceVisualization() {
     // Hide year slider
     document.getElementById("yearRange").classList.remove("hidden");
+    document.querySelector(".year").classList.remove("hidden");
     
     // Clear previous visualization
     const placeDiv = document.getElementById("place");
@@ -605,6 +608,7 @@ function hideScatterTooltip() {
 function createRatingVisualization() {
     // Show year slider
     document.getElementById("yearRange").classList.remove("hidden");
+    document.querySelector(".year").classList.remove("hidden");
     
     // Clear previous visualization
     const ratingDiv = document.getElementById("rating");
