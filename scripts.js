@@ -414,8 +414,9 @@ function createTimeVisualization() {
         .on("mouseout", hideTimeTooltip);
 
     // Legend
+    const legendData = lineData.map(d => ({ genre: d.genre }));
     const legend = svg.selectAll(".legend")
-        .data(finalLegendData)
+        .data(legendData)
         .enter()
         .append("g")
         .attr("class", "legend")
@@ -573,6 +574,7 @@ function createPlaceVisualization() {
         .on("mouseout", hideScatterTooltip);
 
     // Legend
+    const legendData = scatterData.map(d => ({ genre: d.genre }));
     const legend = svg.selectAll(".legend")
         .data(legendData)
         .enter()
@@ -699,6 +701,8 @@ function createRatingVisualization() {
         .on("mouseout", hideRatingTooltip);
 
     // Legend
+    const uniqueGenres = [...new Set(scatterData.map(d => d.genre))];
+    const legendData = uniqueGenres.map(genre => ({ genre }));
     const legend = svg.selectAll(".legend")
         .data(legendData)
         .enter()
