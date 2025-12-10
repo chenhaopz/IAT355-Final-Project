@@ -155,6 +155,11 @@ function createGrossFundsVisualization() {
     // Hide year slider for this visualization
     document.getElementById("yearRange").classList.add("hidden");
     document.querySelector(".year").classList.add("hidden");
+
+    const yearFilterTitle = document.querySelector(".right-controls h3");
+    if (yearFilterTitle) {
+        yearFilterTitle.classList.add("hidden");
+    }
     
     // Clear previous visualization
     const fundsDiv = document.getElementById("funds");
@@ -258,6 +263,11 @@ function createTimeVisualization() {
     // Show year slider
     document.getElementById("yearRange").classList.remove("hidden");
     document.querySelector(".year").classList.remove("hidden");
+
+    const yearFilterTitle = document.querySelector(".right-controls h3");
+    if (yearFilterTitle) {
+        yearFilterTitle.classList.remove("hidden");
+    }
     
     // Clear previous visualization
     const timeDiv = document.getElementById("time");
@@ -393,13 +403,17 @@ function createTimeVisualization() {
 function updateYear(value) {
     const currentYear = parseInt(document.getElementById("yearRange").value);
     document.getElementById('yearVal').textContent = `2000 - ${currentYear}`;
+    const yearFilterTitle = document.querySelector(".right-controls h3");
 
     if (!document.getElementById("time").classList.contains("hidden")) {
         createTimeVisualization();
+        if (yearFilterTitle) yearFilterTitle.classList.remove("hidden");
     } else if (!document.getElementById("place").classList.contains("hidden")) {
-        createPlaceVisualization(); 
+        createPlaceVisualization();
+        if (yearFilterTitle) yearFilterTitle.classList.remove("hidden");
     } else if (!document.getElementById("rating").classList.contains("hidden")) {
         createRatingVisualization();
+        if (yearFilterTitle) yearFilterTitle.classList.remove("hidden");
     }
 }
 
@@ -420,6 +434,11 @@ function createPlaceVisualization() {
     // Hide year slider
     document.getElementById("yearRange").classList.remove("hidden");
     document.querySelector(".year").classList.remove("hidden");
+
+    const yearFilterTitle = document.querySelector(".right-controls h3");
+    if (yearFilterTitle) {
+        yearFilterTitle.classList.remove("hidden");
+    }
     
     // Clear previous visualization
     const placeDiv = document.getElementById("place");
@@ -469,7 +488,7 @@ function createPlaceVisualization() {
     // Chart setup
     const margin = { top: 40, right: 120, bottom: 60, left: 80 };
     const width = Math.max(500, vizContainer.clientWidth - margin.left - margin.right);
-    const height = 700 - margin.top - margin.bottom;
+    const height = 650 - margin.top - margin.bottom;
     
     const svg = d3.select("#place-visualization")
         .append("svg")
@@ -569,6 +588,11 @@ function createRatingVisualization() {
     // Show year slider
     document.getElementById("yearRange").classList.remove("hidden");
     document.querySelector(".year").classList.remove("hidden");
+
+    const yearFilterTitle = document.querySelector(".right-controls h3");
+    if (yearFilterTitle) {
+        yearFilterTitle.classList.remove("hidden");
+    }
     
     // Clear previous visualization
     const ratingDiv = document.getElementById("rating");
