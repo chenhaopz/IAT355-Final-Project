@@ -6,36 +6,34 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="scripts.js"></script>
-    <title>Document</title>
+    <title>Movie Genres Dashboard</title>
 </head>
 <body class="main-grid">
-    <div class="top-left">
-        <div id="funds">
+    <div class="left-content">
+        <!-- Top Bar Menu -->
+        <nav class="top-menu">
+            <div id="fundsLink" class="menu-item active" onclick="changeColour(fundsLink)">Average Gross Revenue</div>
+            <div id="placeLink" class="menu-item" onclick="changeColour(placeLink)">Foreign% VS Domestic%</div>
+            <div id="timeLink" class="menu-item" onclick="changeColour(timeLink)">Over the Decades</div>
+            <div id="ratingLink" class="menu-item" onclick="changeColour(ratingLink)">Rating over Revenue</div>
+        </nav>
+        <!-- Visualization Containers -->
+        <div id="funds" class="visualization-wrapper">
             <h2>Average Gross Movie Revenue From 2020-2024</h2>
         </div>
-        <div id="place">
+        <div id="place" class="visualization-wrapper hidden">
             <h2>Foreign% VS Domestic%</h2>
         </div>
-            
-        <div id="time">
+        <div id="time" class="visualization-wrapper hidden">
             <h2>Over the Decades (Total Revenue)</h2>
         </div>
-            
-        <div id="rating">
+        <div id="rating" class="visualization-wrapper hidden">
             <h2>Rating over Revenue</h2>
         </div>
-           
     </div>
-    <div id="backRight" class="bottom-right">
+    <div class="right-controls">
         <h1>Compare Moive Genres</h1>
-        <div class="flex">
-            <nav>
-                <div id="fundsLink" onclick="changeColour(fundsLink)">Average Gross Revenue</div>
-                <div id="placeLink" onclick="changeColour(placeLink)">Foreign% VS Domestic%</div>
-                <div id="timeLink" onclick="changeColour(timeLink)">Over the Decades</div>
-                <div id="ratingLink" onclick="changeColour(ratingLink)">Rating over Revenue</div>
-            </nav>
-            <div class="genres">
+        <div class="genres">
                 <p id="action" onclick="genreLinks('action')">Action</p>
                 <p id="adventure" onclick="genreLinks('adventure')">Adventure</p>
                 <p id="animation" onclick="genreLinks('animation')">Animation</p>
@@ -56,7 +54,6 @@
                 <p id="western" onclick="genreLinks('western')">Western</p>
                 <p onclick="genreLine('on')"><b>Select All</b></p>
                 <p onclick="genreLine('off')"><b>Clear All</b></p>
-            </div>
         </div>
         
         <div>

@@ -49,101 +49,58 @@ async function loadDataAndInitialize() {
 
 //Unchanged
 function changeColour(item){
-    switch (item) {   
-    case fundsLink:
-        noLine();
-        showNone()
-
-        document.getElementById("backRight").style.backgroundColor = "#E1DEDB";
-        
-        const fl = document.getElementById("fundsLink");
-        fl.style.textDecoration = "underline";
-        fl.style.color = "#0078D7";
-
-        document.getElementById("funds").style.display = "block";
-        // Create or update visualization when Gross Funds is clicked
-        createGrossFundsVisualization();
-        break;
-
-    case placeLink:
-        noLine();
-        showNone()
-
-        document.getElementById("backRight").style.backgroundColor = "#C2C7E4";
-        
-        const pl = document.getElementById("placeLink");
-        pl.style.textDecoration = "underline";
-        pl.style.color = "#0078D7";
-
-        document.getElementById("place").style.display = "block";
-        
-        // Create or update visualization when Foregin VS Domestic is clicked
-        createPlaceVisualization();
-        break;
-
-    case timeLink:
-        noLine();
-        showNone()
-
-        document.getElementById("backRight").style.backgroundColor = "#B4977E";
-        
-        const tl = document.getElementById("timeLink");
-        tl.style.textDecoration = "underline";
-        tl.style.color = "#0078D7";
-
-        document.getElementById("time").style.display = "block";
-        
-        // Create or update visualization when Over the Decades is clicked
-        createTimeVisualization();
-        break;
-
-    case ratingLink:
-        noLine();
-        showNone()
-
-        document.getElementById("backRight").style.backgroundColor = "#F3E0BE";
-        
-        const rl = document.getElementById("ratingLink");
-        rl.style.textDecoration = "underline";
-        rl.style.color = "#0078D7";
-
-        document.getElementById("rating").style.display = "block";
-        createRatingVisualization();
-        break;
-
-    default:
-        noLine();
-        document.getElementById("backRight").style.backgroundColor = "#A47864";
-        document.getElementById("fundsLink").style.textDecoration = "underline";
-        document.getElementById("funds").style.display = "block";
+    // Remove active class from all menu items
+    document.querySelectorAll('.menu-item').forEach(el => {
+        el.classList.remove('active');
+        el.style.textDecoration = "none";
+        el.style.color = "";
+    });
+    
+    // Hide all visualizations
+    document.querySelectorAll('.visualization-wrapper').forEach(el => {
+        el.classList.add('hidden');
+    });
+    const rightControls = document.querySelector('.right-controls');
+    
+    switch (item) {
+        case fundsLink:
+            // Set active menu
+            item.classList.add('active');
+            item.style.textDecoration = "underline";
+            item.style.color = "white";
+            rightControls.style.backgroundColor = "#E1DEDB";
+            document.getElementById("funds").classList.remove("hidden");
+            createGrossFundsVisualization();
+            break;
+            
+        case placeLink:
+            item.classList.add('active');
+            item.style.textDecoration = "underline";
+            item.style.color = "white";
+            rightControls.style.backgroundColor = "#C2C7E4";
+            document.getElementById("place").classList.remove("hidden");
+            createPlaceVisualization();
+            break;
+            
+        case timeLink:
+            item.classList.add('active');
+            item.style.textDecoration = "underline";
+            item.style.color = "white";
+            rightControls.style.backgroundColor = "#B4977E";
+            document.getElementById("time").classList.remove("hidden");
+            createTimeVisualization();
+            break;
+            
+        case ratingLink:
+            item.classList.add('active');
+            item.style.textDecoration = "underline";
+            item.style.color = "white";
+            rightControls.style.backgroundColor = "#F3E0BE";
+            document.getElementById("rating").classList.remove("hidden");
+            createRatingVisualization();
+            break;
     }
 }
-
-
-function showNone(){
-    document.getElementById("funds").style.display = "none";
-    
-    document.getElementById("time").style.display = "none";
-    
-    document.getElementById("place").style.display = "none";
-    
-    document.getElementById("rating").style.display = "none";
-}
-
-function noLine(){
-    document.getElementById("fundsLink").style.textDecoration = "none";
-    document.getElementById("fundsLink").style.color = "black";
-    
-    document.getElementById("timeLink").style.textDecoration = "none";
-    document.getElementById("timeLink").style.color = "black";
-    
-    document.getElementById("placeLink").style.textDecoration = "none";
-    document.getElementById("placeLink").style.color = "black";
-    
-    document.getElementById("ratingLink").style.textDecoration = "none";
-    document.getElementById("ratingLink").style.color = "black";
-}
-
 function genreLinks(genre){
     const element = document.getElementById(genre);
 
@@ -155,13 +112,13 @@ function genreLinks(genre){
     
     hasUnderline ? currentGenres.delete(genre) : currentGenres.add(genre);
     
-    if (document.getElementById("funds").style.display === "block") {
+    if (!document.getElementById("funds").classList.contains("hidden")) {
         createGrossFundsVisualization();
-    } else if (document.getElementById("time").style.display === "block") {
+    } else if (!document.getElementById("time").classList.contains("hidden")) {
         createTimeVisualization();
-    } else if (document.getElementById("place").style.display === "block") {
+    } else if (!document.getElementById("place").classList.contains("hidden")) {
         createPlaceVisualization();
-    } else if (document.getElementById("rating").style.display === "block") {
+    } else if (!document.getElementById("rating").classList.contains("hidden")) {
         createRatingVisualization();
     }
 }
@@ -182,13 +139,13 @@ function genreLine(state){
         underline ? currentGenres.add(id) : currentGenres.delete(id);
     });
     
-    if (document.getElementById("funds").style.display === "block") {
+    if (!document.getElementById("funds").classList.contains("hidden")) {
         createGrossFundsVisualization();
-    } else if (document.getElementById("time").style.display === "block") {
+    } else if (!document.getElementById("time").classList.contains("hidden")) {
         createTimeVisualization();
-    } else if (document.getElementById("place").style.display === "block") {
+    } else if (!document.getElementById("place").classList.contains("hidden")) {
         createPlaceVisualization();
-    } else if (document.getElementById("rating").style.display === "block") {
+    } else if (!document.getElementById("rating").classList.contains("hidden")) {
         createRatingVisualization();
     }
 }
@@ -438,11 +395,11 @@ function updateYear(value) {
     const currentYear = parseInt(document.getElementById("yearRange").value);
     document.getElementById('yearVal').textContent = `2000 - ${currentYear}`;
 
-    if (document.getElementById("time").style.display === "block") {
+    if (!document.getElementById("time").classList.contains("hidden")) {
         createTimeVisualization();
-    } else if (document.getElementById("place").style.display === "block") {
+    } else if (!document.getElementById("place").classList.contains("hidden")) {
         createPlaceVisualization(); 
-    } else if (document.getElementById("rating").style.display === "block") {
+    } else if (!document.getElementById("rating").classList.contains("hidden")) {
         createRatingVisualization();
     }
 }
