@@ -67,11 +67,15 @@ h2{
     width: 30%;
     background-color: #E1DEDB;
     border-left: solid 2px black;
-    padding: 2rem;
+    padding-left: 2rem;
+    padding-bottom:5rem;
+    padding-right: 2rem;
+    padding-top: 5rem;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap:6rem;
     overflow-y: auto;
+    justify-content: center;
 }
 
 #fundsLink{
@@ -134,10 +138,7 @@ h2{
 .slider{
     width: 100%;
 }
-.slider-container {
-    margin-top: auto;
-    padding-top: 2rem;
-}
+
 
 /* Visualization wrapper */
 .visualization-wrapper {
@@ -154,7 +155,7 @@ h2{
 }
 
 input{
-    margin-top: 3rem;
+    margin-top: 0;
 }
 
 .tooltip {
