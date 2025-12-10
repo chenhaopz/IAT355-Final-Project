@@ -185,9 +185,9 @@ function createGrossFundsVisualization() {
      .sort((a, b) => b.revenue - a.revenue);
     
     // Chart dimensions
-    const margin = { top: 40, right: 30, bottom: 80, left: 80 };
+    const margin = { top: 40, right: 80, bottom: 60, left: 80 };
     const width = Math.max(500, vizContainer.clientWidth - margin.left - margin.right);
-    const height = 400 - margin.top - margin.bottom;
+    const height = 650 - margin.top - margin.bottom;
     
     const svg = d3.select("#funds-visualization")
         .append("svg")
@@ -211,8 +211,7 @@ function createGrossFundsVisualization() {
         .attr("transform", `translate(0,${height})`)
         .call(d3.axisBottom(xScale))
         .selectAll("text")
-        .attr("transform", "rotate(-45)")
-        .style("text-anchor", "end");
+        .style("text-anchor", "middle");
     
     svg.append("g")
         .call(d3.axisLeft(yScale).tickFormat(d => `$${d}M`));
@@ -303,9 +302,9 @@ function createTimeVisualization() {
     }).filter(d => d.values.length > 0);
     
     // Chart dimensions
-    const margin = { top: 40, right: 100, bottom: 60, left: 80 }; 
+    const margin = { top: 40, right: 120, bottom: 60, left: 80 }; 
     const width = Math.max(500, vizContainer.clientWidth - margin.left - margin.right);
-    const height = 400 - margin.top - margin.bottom;
+    const height = 650 - margin.top - margin.bottom;
     
     const svg = d3.select("#time-visualization")
         .append("svg")
@@ -484,22 +483,24 @@ function createPlaceVisualization() {
     const xScale = d3.scaleLinear().domain([0, 100]).range([0, chartSize]);
     const yScale = d3.scaleLinear().domain([0, 100]).range([chartSize, 0]);
     
+    const xOffset = (width - chartSize) / 2;
     // Color scale
     const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
     
     // Axes
     svg.append("g")
-        .attr("transform", `translate(0,${height})`)
+        .attr("transform", `translate(${xOffset},${height})`) 
         .call(d3.axisBottom(xScale).tickFormat(d => `${d}%`));
     
     svg.append("g")
+        .attr("transform", `translate(${xOffset},0)`)
         .call(d3.axisLeft(yScale).tickFormat(d => `${d}%`));
     
     // Axis labels
     svg.append("text")
         .attr("class", "axis-label")
         .attr("transform", "rotate(-90)")
-        .attr("y", -margin.left)
+        .attr("y", -margin.left + xOffset)
         .attr("x", -height / 2)
         .attr("dy", "1em")
         .text("Average Domestic %");
@@ -512,18 +513,18 @@ function createPlaceVisualization() {
     // Reference line
     svg.append("line")
         .attr("class", "reference-line")
-        .attr("x1", xScale(0))
+        .attr("x1", xScale(0) + xOffset)
         .attr("y1", yScale(0))
-        .attr("x2", xScale(100))
+        .attr("x2", xScale(100) + xOffset)
         .attr("y2", yScale(100));
-    
+
     // Dots
     svg.selectAll(".scatter-dot")
         .data(scatterData)
         .enter()
         .append("circle")
         .attr("class", "scatter-dot")
-        .attr("cx", d => xScale(d.foreignPercent))
+        .attr("cx", d => xScale(d.foreignPercent) + xOffset)
         .attr("cy", d => yScale(d.domesticPercent))
         .attr("r", 8)
         .style("fill", d => colorScale(d.genre))
@@ -602,9 +603,9 @@ function createRatingVisualization() {
     }));
     
     // Chart setup
-    const margin = { top: 40, right: 150, bottom: 60, left: 80 };
+    const margin = { top: 40, right: 120, bottom: 60, left: 80 };
     const width = Math.max(500, vizContainer.clientWidth - margin.left - margin.right);
-    const height = 500 - margin.top - margin.bottom;
+    const height = 650 - margin.top - margin.bottom;
     
     const svg = d3.select("#rating-visualization")
         .append("svg")
