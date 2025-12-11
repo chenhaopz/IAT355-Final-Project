@@ -223,11 +223,17 @@ function createGrossFundsVisualization() {
     
     // Labels
     svg.append("text")
+        .attr("class", "axis-label")
         .attr("transform", "rotate(-90)")
         .attr("y", -margin.left)
         .attr("x", -height / 2)
         .attr("dy", "1em")
         .text("Average Revenue ($ Millions)");
+
+    svg.append("text")
+    .attr("class", "axis-label")
+    .attr("transform", `translate(${width / 2}, ${height + margin.bottom - 10})`)
+    .text("Movie Genres");
     
     // Bars
     svg.selectAll(".bar")
@@ -250,7 +256,7 @@ function showTooltip(event, d) {
         .style("left", (event.pageX + 10) + "px")
         .style("top", (event.pageY - 10) + "px")
         .style("height", "fit-content")
-        .html(`${d.genre}<br/>Avg: $${d.revenue.toFixed(2)}M`);
+        .html(`<strong>${d.genre}</strong><br/>Avg: $${d.revenue.toFixed(2)}M`);
 }
 
 function hideTooltip() {
@@ -351,20 +357,44 @@ function createTimeVisualization() {
     
     // axis labels
     svg.append("text")
+        .attr("class", "axis-label")
         .attr("transform", "rotate(-90)")
         .attr("y", -margin.left)
         .attr("x", -height / 2)
         .attr("dy", "1em")
         .text("Total Revenue ($ Millions)");
+
+    svg.append("text")
+        .attr("class", "axis-label")
+        .attr("transform", `translate(${width / 2}, ${height + margin.bottom - 10})`)
+        .text("Year");
     
     // lines
     svg.selectAll(".genre-line")
         .data(lineData)
         .enter()
         .append("path")
-        .attr("class", "line")
+        .attr("class", "genre-line")
         .attr("d", d => line(d.values))
-        .style("stroke", d => colorScale(d.genre));
+        .style("stroke", d => colorScale(d.genre))
+        .on("mouseover", function(event, d) {
+            d3.select(this)
+                .classed("genre-line-highlighted", true);
+            
+            d3.select("body").append("div")
+                .attr("class", "tooltip")
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 10) + "px")
+                .style("height", "fit-content")
+                .html(`<strong>${d.genre}</strong><br/>Total Revenue: $${d3.sum(d.values, v => v.revenue).toFixed(2)}M`);
+        })
+        .on("mouseout", function() {
+            d3.select(this)
+                .classed("genre-line-highlighted", false);
+            
+            d3.selectAll(".tooltip").remove();
+        });
+    
     
     // Dots
     svg.selectAll(".dot")
@@ -377,7 +407,11 @@ function createTimeVisualization() {
         .attr("r", 4)
         .style("fill", d => colorScale(d.genre))
         .on("mouseover", showTimeTooltip)
-        .on("mouseout", hideTimeTooltip);
+        .on("mouseout", hideTimeTooltip)
+        .on("mouseenter", function() {
+            d3.event.stopPropagation();
+        });
+
 
     // Legend
     const legendData = lineData.map(d => ({ genre: d.genre }));
@@ -418,12 +452,13 @@ function updateYear(value) {
 }
 
 function showTimeTooltip(event, d) {
+    if (event) event.stopPropagation();
     d3.select("body").append("div")
         .attr("class", "tooltip")
         .style("left", (event.pageX + 10) + "px")
         .style("top", (event.pageY - 10) + "px")
         .style("height", "fit-content")
-        .html(`${d.genre}<br/>Year: ${d.year}<br/>Revenue: $${d.revenue.toFixed(2)}M`);
+        .html(`<strong>${d.genre}</strong><br/>Year: ${d.year}<br/>Revenue: $${d.revenue.toFixed(2)}M`);
 }
 
 function hideTimeTooltip() {
@@ -577,7 +612,7 @@ function showScatterTooltip(event, d) {
         .style("left", (event.pageX + 10) + "px")
         .style("top", (event.pageY - 10) + "px")
         .style("height", "fit-content")
-        .html(`${d.genre}<br/>Domestic: ${d.domesticPercent.toFixed(1)}%<br/>Foreign: ${d.foreignPercent.toFixed(1)}%`);
+        .html(`<strong>${d.genre}</strong><br/>Domestic: ${d.domesticPercent.toFixed(1)}%<br/>Foreign: ${d.foreignPercent.toFixed(1)}%`);
 }
 
 function hideScatterTooltip() {
@@ -710,7 +745,7 @@ function showRatingTooltip(event, d) {
         .style("left", (event.pageX + 10) + "px")
         .style("top", (event.pageY - 10) + "px")
         .style("height", "fit-content")
-        .html(`${d.title}<br/>Genre: ${d.genre}<br/>Rating: ${d.rating}<br/>Revenue: $${d.revenue.toFixed(2)}M<br/>Year: ${d.year}`);
+        .html(`<strong>${d.title}</strong><br/>Genre: ${d.genre}<br/>Rating: ${d.rating}<br/>Revenue: $${d.revenue.toFixed(2)}M<br/>Year: ${d.year}`);
 }
 
 function hideRatingTooltip() {
