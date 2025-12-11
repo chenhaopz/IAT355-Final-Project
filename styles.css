@@ -250,7 +250,7 @@ input{
 }
 
 .scatter-dot:hover {
-    r: 10;
+    r: 15;
     stroke-width: 2;
 }
 

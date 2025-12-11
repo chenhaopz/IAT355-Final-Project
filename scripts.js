@@ -499,8 +499,8 @@ function createPlaceVisualization() {
     
     // Scales with fixed 0-100% domain (ensure equal axis lengths)
     const chartSize = Math.min(width, height); 
-    const xScale = d3.scaleLinear().domain([0, 100]).range([0, chartSize]);
-    const yScale = d3.scaleLinear().domain([0, 100]).range([chartSize, 0]);
+    const xScale = d3.scaleLinear().domain([20, 80]).range([0, chartSize]);
+    const yScale = d3.scaleLinear().domain([20, 80]).range([chartSize, 0]);
     
     const xOffset = (width - chartSize) / 2;
     // Color scale
@@ -532,10 +532,10 @@ function createPlaceVisualization() {
     // Reference line
     svg.append("line")
         .attr("class", "reference-line")
-        .attr("x1", xScale(0) + xOffset)
-        .attr("y1", yScale(0))
-        .attr("x2", xScale(100) + xOffset)
-        .attr("y2", yScale(100));
+        .attr("x1", xScale(20) + xOffset)
+        .attr("y1", yScale(20))
+        .attr("x2", xScale(80) + xOffset)
+        .attr("y2", yScale(80));
 
     // Dots
     svg.selectAll(".scatter-dot")
