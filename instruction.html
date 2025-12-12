@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Instruction Guide</title>
+</head>
+<body>
+    <!-- Back Button -->
+    <a href="index.html" class="back-button">
+        Back to Visualizations
+    </a>
+    
+    <div class="instruction-page">
+        <div class="instruction-content">
+            <header>
+                <h1>Instruction Guide</h1>
+                <p>Guide how to explore Movies Box office Dataset (2000-2024) <a href="https://www.kaggle.com/datasets/aditya126/movies-box-office-dataset-2000-2024" target="_blank">View Original Dataset</a></p>
+            </header>
+            
+            <!-- Introduction Section -->
+            <section class="instruction-section">
+                <h2>Welcome!</h2>
+                <p>This interactive tool helps you explore movie data and discover interesting patterns in revenue, ratings, and popularity across different genres.</p>
+                
+                <p><strong>Tip:</strong> You can always return to the visualizations by clicking the blue button in the top-left corner.</p>
+            </section>
+            
+            <!-- How to Use Section -->
+            <section class="instruction-section">
+                <h2>How to Use This Website</h2>
+                
+                <h3>Top Navigation Bar</h3>
+                <ul>
+                    <li><strong>Average Gross Revenue:</strong> Shows average movie earnings by genre</li>
+                    <li><strong>Foreign% VS Domestic%:</strong> Compares where movies make their money</li>
+                    <li><strong>Over the Decades:</strong> Shows revenue changes over time</li>
+                    <li><strong>Rating over Revenue:</strong> Compares movie ratings with earnings</li>
+                </ul>
+                
+                <h3>Right Side Panel</h3>
+                <ul>
+                    <li>Click on any genre to select it (will turns blue)</li>
+                    <li>Click Select All Button to choose all genres</li>
+                    <li>Click Clear All Button to unselect all genres</li>
+                    <li>Use the Year Slider to filter by time period (2000-2024)</li>
+                </ul>
+            </section>
+            
+            <!-- Visualizations Explaination -->
+            <section class="instruction-section">
+                <h2>Understanding Each Visualization</h2>
+                
+                <article class="viz-example">
+                    <h3>1. Average Gross Revenue (Bar Chart)</h3>
+                    <p><strong>What it shows:</strong> How much money different types of movies make on average.</p>
+                    <p><strong>How to use:</strong></p>
+                    <ul>
+                        <li>Each bar = one movie genre</li>
+                        <li>Taller bars = higher average revenue</li>
+                        <li>Hover over bars for exact revenue numbers</li>
+                        <li>Select genres to compare them</li>
+                    </ul>
+                    <p><strong>Use this to:</strong> Find which genres make the most money</p>
+                </article>
+                
+                <article class="viz-example">
+                    <h3>2. Foreign% VS Domestic% (Dot Chart)</h3>
+                    <p><strong>What it shows:</strong> Where movies earn their money, at domestically or internationally.</p>
+                    <p><strong>How to use:</strong></p>
+                    <ul>
+                        <li>Each dot = one genre</li>
+                        <li>X-position= average foreign earnings percentage</li>
+                        <li>Y-position = average domestic earnings percentage</li>
+                        <li>Dots above guide line (dotted line) = more popular domestically</li>
+                        <li>Dots below guide line (dotted line) = more popular internationally</li>
+                    </ul>
+                    <p><strong>Use this to:</strong> See which genres travel well to other countries</p>
+                </article>
+                
+                <article class="viz-example">
+                    <h3>3. Over the Decades (Line Chart)</h3>
+                    <p><strong>What it shows:</strong> How movie revenue changes over time for each genre.</p>
+                    <p><strong>How to use:</strong></p>
+                    <ul>
+                        <li>Each colored line = one genre</li>
+                        <li>X-position = years (2000-2024)</li>
+                        <li>Y-position = total revenue</li>
+                        <li>Use year slider to change time range</li>
+                        <li>Hover over lines for total revenue</li>
+                        <li>Hover over dots for total revenue in that years</li>
+                        
+                    </ul>
+                    <p><strong>Use this to:</strong> Track which genres are growing or declining</p>
+                </article>
+                
+                <article class="viz-example">
+                    <h3>4. Rating over Revenue (Scatter Plot)</h3>
+                    <p><strong>What it shows:</strong> The relationship between movie ratings and movie total revenue.</p>
+                    <p><strong>How to use:</strong></p>
+                    <ul>
+                        <li>Each dot = one movie</li>
+                        <li>X-position = movie rating (0-10)</li>
+                        <li>Y-position = movie total revenue</li>
+                        <li>Top-right Corner = highly rated and high revenue</li>
+                        <li>Bottom-right Corner = highly rated but low revenue</li>
+                        <li>Top-left Corner = low rated but high revenue</li>
+                        <li>Bottom-left Corner = low rated and low revenue</li>
+                    </ul>
+                    <p><strong>Use this to:</strong> Find hidden gems that great movies that didn't make much money (Such as, Attack on Titan the Movie: The Last Attack)</p>
+                </article>
+            </section>
+            
+            <!-- Questions Section -->
+            <section class="instruction-section">
+                <h2>Key Questions You Can Answer</h2>
+                
+                <h4>For Example:</h4>
+                <ol>
+                    <li><strong>Which genres make the most money?</strong> (Use Average Gross Revenue chart)</li>
+                    <li><strong>Which genres are most popular internationally?</strong> (Use Foreign% VS Domestic% chart)</li>
+                    <li><strong>Has horror movie revenue increased over time?</strong> (Use Over the Decades chart)</li>
+                    <li><strong>Are highly rated movies always successful?</strong> (Use Rating over Revenue chart)</li>
+                </ol>
+            </section>
+            
+            <!-- Tips Section -->
+            <section class="instruction-section">
+                <h2>Tips</h2>
+                
+                <ol>
+                        <li><strong>Start simple:</strong> Select 2-3 genres to compare first</li>
+                        <li><strong>Use the year filter:</strong> Narrow down to specific time periods</li>
+                        <li><strong>Hover over everything:</strong> Get detailed information in that years</li>
+                        <li><strong>Look for patterns:</strong> Notice trends across different visualizations</li>
+                        <li><strong>Find surprises:</strong> Look for movies that break normal patterns (outliers)</li>
+                </ol>
+                
+                <p class="highlighted-text">
+                    Remember: Good ratings don't always mean big money, and big money doesn't always mean good ratings!
+                </p>
+            </section>
+        </div>
+    </div>
+</body>
+</html>
