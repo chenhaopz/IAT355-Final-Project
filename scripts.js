@@ -190,9 +190,9 @@ function createGrossFundsVisualization() {
      .sort((a, b) => b.revenue - a.revenue);
     
     // Chart dimensions
-    const margin = { top: 40, right: 80, bottom: 60, left: 80 };
+    const margin = { top: 40, right: 120, bottom: 80, left: 80 };
     const width = Math.max(500, vizContainer.clientWidth - margin.left - margin.right);
-    const height = 650 - margin.top - margin.bottom;
+    const height = 600 - margin.top - margin.bottom;
     
     const svg = d3.select("#funds-visualization")
         .append("svg")
@@ -216,10 +216,14 @@ function createGrossFundsVisualization() {
         .attr("transform", `translate(0,${height})`)
         .call(d3.axisBottom(xScale))
         .selectAll("text")
-        .style("text-anchor", "middle");
+        .style("text-anchor", "middle")
+        .attr("transform", "rotate(-45)")
+        .style("text-anchor", "end")
+        .style("font-size", "14px");
     
     svg.append("g")
-        .call(d3.axisLeft(yScale).tickFormat(d => `$${d}M`));
+        .call(d3.axisLeft(yScale).tickFormat(d => `$${d}M`))
+        .style("font-size", "14px");
     
     // Labels
     svg.append("text")
@@ -318,7 +322,7 @@ function createTimeVisualization() {
     }).filter(d => d.values.length > 0);
     
     // Chart dimensions
-    const margin = { top: 40, right: 120, bottom: 60, left: 80 }; 
+    const margin = { top: 40, right: 120, bottom: 60, left: 100 }; 
     const width = Math.max(500, vizContainer.clientWidth - margin.left - margin.right);
     const height = 650 - margin.top - margin.bottom;
     
@@ -350,16 +354,18 @@ function createTimeVisualization() {
     // Axes
     svg.append("g")
         .attr("transform", `translate(0,${height})`)
-        .call(d3.axisBottom(xScale).tickFormat(d3.format("d")));
+        .call(d3.axisBottom(xScale).tickFormat(d3.format("d")))
+        .style("font-size", "14px");
     
     svg.append("g")
-        .call(d3.axisLeft(yScale).tickFormat(d => `$${d}M`));
+        .call(d3.axisLeft(yScale).tickFormat(d => `$${d}M`))
+        .style("font-size", "14px");
     
     // axis labels
     svg.append("text")
         .attr("class", "axis-label")
         .attr("transform", "rotate(-90)")
-        .attr("y", -margin.left)
+        .attr("y", -margin.left + 10)
         .attr("x", -height / 2)
         .attr("dy", "1em")
         .text("Total Revenue ($ Millions)");
@@ -544,11 +550,13 @@ function createPlaceVisualization() {
     // Axes
     svg.append("g")
         .attr("transform", `translate(${xOffset},${height})`) 
-        .call(d3.axisBottom(xScale).tickFormat(d => `${d}%`));
+        .call(d3.axisBottom(xScale).tickFormat(d => `${d}%`))
+        .style("font-size", "14px");
     
     svg.append("g")
         .attr("transform", `translate(${xOffset},0)`)
-        .call(d3.axisLeft(yScale).tickFormat(d => `${d}%`));
+        .call(d3.axisLeft(yScale).tickFormat(d => `${d}%`))
+        .style("font-size", "14px");
     
     // Axis labels
     svg.append("text")
@@ -662,7 +670,7 @@ function createRatingVisualization() {
     }));
     
     // Chart setup
-    const margin = { top: 40, right: 120, bottom: 60, left: 80 };
+    const margin = { top: 40, right: 120, bottom: 60, left: 100 };
     const width = Math.max(500, vizContainer.clientWidth - margin.left - margin.right);
     const height = 650 - margin.top - margin.bottom;
     
@@ -685,16 +693,18 @@ function createRatingVisualization() {
     // Axes
     svg.append("g")
         .attr("transform", `translate(0,${height})`)
-        .call(d3.axisBottom(xScale));
+        .call(d3.axisBottom(xScale))
+        .style("font-size", "14px");
     
     svg.append("g")
-        .call(d3.axisLeft(yScale).tickFormat(d => `$${d}M`));
+        .call(d3.axisLeft(yScale).tickFormat(d => `$${d}M`))
+        .style("font-size", "14px");
     
     // Axis labels
     svg.append("text")
         .attr("class", "axis-label")
         .attr("transform", "rotate(-90)")
-        .attr("y", -margin.left)
+        .attr("y", -margin.left + 10)
         .attr("x", -height / 2)
         .attr("dy", "1em")
         .text("Worldwide Revenue ($ Millions)");
