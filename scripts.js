@@ -549,7 +549,7 @@ function createPlaceVisualization() {
     
     // Axes
     svg.append("g")
-        .attr("transform", `translate(${xOffset},${height})`) 
+        .attr("transform", `translate(${xOffset},${chartSize})`) 
         .call(d3.axisBottom(xScale).tickFormat(d => `${d}%`))
         .style("font-size", "14px");
     

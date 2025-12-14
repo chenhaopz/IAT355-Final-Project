@@ -372,3 +372,128 @@ h3 {
     }
 }
 
+@media screen and (max-width: 480px) {
+    body, html {
+        overflow-y: auto;
+        height: auto;
+    }
+    
+    .main-grid {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+    }
+    
+    .left-content,
+    .right-controls {
+        width: 100%;
+        height: auto;
+    }
+    
+    .left-content {
+        min-height: 60vh;
+        padding: 0;
+    }
+    
+    .right-controls {
+        border-left: none;
+        border-top: 2px solid black;
+        padding: 0rem; 
+        gap: 1.5rem;
+    }
+    
+    .visualization-wrapper {
+        padding: 0.8rem;
+        min-height: 50vh;
+        overflow-y: auto;
+    }
+    
+    .visualization-container {
+        height: auto;
+        min-height: 250px;
+        max-height: 400px;
+        margin-top: 0;
+    }
+    
+    .visualization-wrapper h2 {
+        font-size: 1rem;
+        margin: 0 0 0.5rem;
+        text-align: center;
+        line-height: 1.2;
+        padding: 0.5rem 0;
+    }
+    
+    .top-menu {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+        padding: 0.5rem;
+        justify-content: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+    
+    .menu-item {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.5rem;
+        flex: 0 0 calc(50% - 0.3rem);
+        text-align: center;
+    }
+    
+    .instruction-link {
+        flex: 0 0 50%;
+        margin-top: 0.3rem;
+    }
+    
+    .genres-grid h1 {
+        font-size: 1.1rem;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+    
+    .genre-buttons {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.3rem;
+    }
+    
+    .genre-buttons > * {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+    
+    .action-buttons > * {
+        min-width: 60px;
+        font-size: 0.7rem;
+        padding: 0.3rem 0.5rem;
+    }
+    
+    .right-controls h3 {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .year {
+        font-size: 0.9rem;
+        margin-top: 0.3rem;
+    }
+    
+    .axis text {
+        font-size: 0.65rem;
+    }
+    
+    .axis-label {
+        font-size: 0.75rem;
+    }
+    
+    .legend {
+        display: none;
+    }
+}
