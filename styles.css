@@ -398,7 +398,7 @@ h3 {
     .right-controls {
         border-left: none;
         border-top: 2px solid black;
-        padding: 0rem; 
+        padding: 0rem;
         gap: 1.5rem;
     }
     
@@ -465,9 +465,6 @@ h3 {
         justify-content: center;
     }
     
-        gap: 0.5rem;
-        margin-top: 0.5rem;
-    }
     
     .action-buttons > * {
         min-width: 60px;
