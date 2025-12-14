@@ -371,6 +371,11 @@ h3 {
         border-top: solid 2px black;
     }
 }
+@media screen and (max-width: 1013px) {
+    .menu-item {
+        font-size: 0.8rem;
+    }
+}
 
 @media screen and (max-width: 480px) {
     body, html {
